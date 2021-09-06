@@ -1,0 +1,61 @@
+KafkaDeploy.txt
+https://github.com/jhooda/kafka/blob/master/README.my
+
+Deployment
+
+Step 1) Get kafka from my repo which has fix for deployment issues with kafka client libraries and server
+prompt> git clone https://github.com/jhooda/kafka.git
+ 
+Step 2) Build scala client jars to maven repos and build server tar ball
+prompt> cd kafka
+prompt> ./gradlew clean
+prompt> ./gradlew -PscalaVersion=2.10.3 install
+prompt> ./gradlew -PscalaVersion=2.10.3 releaseTarGz
+ 
+Step 3) Edit server config file to enable auto creation of topics
+prompt> echo "# custom properties " >> config/server.properties
+prompt> echo "auto.create.topics.enable=true" >> config/server.properties
+ 
+Step 4) deploy a local kafka server
+prompt>  mkdir ~/kafka-server
+prompt> cp core/build/distributions/kafka_2.10-0.8.1.1-SNAPSHOT.tgz ~/kafka-server/.
+prompt> cd ~/kafka-server
+prompt> tar xvzf  kafka_2.10-0.8.1.1-SNAPSHOT.tgz
+prompt> cd kafka_2.10-0.8.1.1-SNAPSHOT
+ 
+Step 5) Test kafka server
+prompt> ./bin/kafka-server-start.sh config/server.properties
+# If no fatal errors above then everything worked fine, so CTRL^C and rerun as  daemon as explained below
+ 
+Step 6) Start kafka server as daemon
+prompt> ./bin/kafka-server-start.sh -daemon config/server.properties
+ 
+Step 4) Test zookeeper server
+prompt> ./bin/zookeeper-server-start.sh ./config/zookeeper.properties
+# If no fatal errors above  then everything worked fine, so CTRL^C and rerun as  daemon as explained below
+ 
+Step 5) Start zookeeper server as daemon
+prompt> ./bin/zookeeper-server-start.sh -daemon ./config/zookeeper.properties
+
+FAQ
+Q1. How do I clean kafka/zookeeper back to a pristine/fresh state on dev machine?
+ A1. Stop all running instances of zookeeper and kafka and then remove their data logs
+   prompt> kill -9 <kafka_pid> <zookeeper_pid>
+   prompt> rm -rf /tmp/kafka-logs /tmp/zookeeper
+
+Q2. How to merge upstream changes from main kafka project
+
+Step 1) Checkout from tag, e.g.,
+
+git show-ref --tags
+git checkout refs/tags/0.8.1.1 -b tags_0.8.1.1
+
+Step 2) Merge build.gradle gradle.properties manually from master branch
+
+Step 3) git branch -D master
+
+Step 3) git checkout remotes/github/master -b master
+
+Step 4) git reset --hard tags_0.8.1.1
+
+Step 5) git push github +master:master
