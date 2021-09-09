@@ -1,0 +1,5 @@
+https://github.com/jhooda/kafka/blob/master/README.my
+https://www.apache.org/dyn/closer.cgi?path=/kafka/2.8.0/kafka-2.8.0-src.tgz
+https://debezium.io/documentation/reference/operations/logging.html
+https://www.mrjamiebowman.com/software-development/kafka/debugging-kafka-connect-connectors-smts-in-java/
+https://cwiki.apache.org/confluence/display/kafka/developer+setup
